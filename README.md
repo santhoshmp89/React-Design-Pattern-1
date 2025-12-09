@@ -1,7 +1,5 @@
 # React Container–Presentation Pattern
 
-### Sandbox link: https://codesandbox.io/p/devbox/agitated-tereshkova-m953kd?file=%2Fsrc%2Findex.js%3A9%2C11&workspaceId=ws_HNgpUAEXJVy67snonvHVmS
-
 ## Overview
 
 The **Container–Presentation Pattern** (also known as the Smart–Dumb Component pattern) is a design approach in React used to clearly separate **UI rendering** from **business logic and data handling**. This results in cleaner, more testable, and more maintainable code.
@@ -181,3 +179,10 @@ The Container–Presentation pattern helps:
 * Simplify testing
 
 Although modern React encourages hooks and server components, this pattern remains valuable for structuring complex UI applications.
+
+
+---
+
+
+### Sandbox link: https://codesandbox.io/p/devbox/agitated-tereshkova-m953kd?file=%2Fsrc%2Findex.js%3A9%2C11&workspaceId=ws_HNgpUAEXJVy67snonvHVmS
+
