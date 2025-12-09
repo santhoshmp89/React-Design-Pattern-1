@@ -180,9 +180,133 @@ The Container–Presentation pattern helps:
 
 Although modern React encourages hooks and server components, this pattern remains valuable for structuring complex UI applications.
 
+---
+
+# Render Props Pattern
+
+Sandbox link: https://codesandbox.io/p/devbox/agitated-tereshkova-m953kd?file=%2Fsrc%2Findex.js%3A9%2C11&workspaceId=ws_HNgpUAEXJVy67snonvHVmS
+
+## Overview
+
+The **Render Props** pattern is a React design technique where a component receives a **function as a prop**. This function is responsible for determining **what UI gets rendered**, giving the consumer complete control over presentation.
+
+Render props are mainly used for sharing reusable logic between components while keeping the UI flexible.
 
 ---
 
+## What Is a Render Prop?
 
-### Sandbox link: https://codesandbox.io/p/devbox/agitated-tereshkova-m953kd?file=%2Fsrc%2Findex.js%3A9%2C11&workspaceId=ws_HNgpUAEXJVy67snonvHVmS
+A **render prop** is simply a prop whose value is a function. The component calls this function and passes it the data or state, and the function returns the UI elements.
 
+**In short:** Logic lives in the component, UI comes from the function passed as a prop.
+
+---
+
+## Basic Example
+
+### Without Render Props (tightly coupled)
+
+```jsx
+function MouseTracker() {
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+
+  return (
+    <div
+      onMouseMove={(e) => setPos({ x: e.clientX, y: e.clientY })}
+      style={{ height: "300px", border: "1px solid black" }}
+    >
+      X: {pos.x}, Y: {pos.y}
+    </div>
+  );
+}
+```
+
+This works but does **not** allow UI customization.
+
+---
+
+## Render Props Version
+
+```jsx
+function Mouse({ children }) {
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+
+  return (
+    <div
+      onMouseMove={(e) => setPos({ x: e.clientX, y: e.clientY })}
+      style={{ height: "300px", border: "1px solid black" }}
+    >
+      {children(pos)}
+    </div>
+  );
+}
+```
+
+### Usage
+
+```jsx
+<Mouse>
+  {(pos) => (
+    <h2>
+      Mouse at {pos.x}, {pos.y}
+    </h2>
+  )}
+</Mouse>
+```
+
+The parent component decides the UI based on shared mouse-tracking logic.
+
+---
+
+## Why Use Render Props?
+
+* Share logic without duplicating code
+* UI stays flexible and customizable
+* No inheritance needed
+* Good before hooks existed
+
+---
+
+## Downsides
+
+* Can lead to nested function structures (wrapper hell)
+* More verbose than modern alternatives
+* Harder for beginners to read
+
+---
+
+## Modern Alternative: Custom Hooks
+
+Render props are mostly replaced by **custom hooks** because they are cleaner and easier to use.
+
+### Hook Example
+
+```jsx
+function useMouse() {
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handler = (e) => setPos({ x: e.clientX, y: e.clientY });
+    window.addEventListener("mousemove", handler);
+    return () => window.removeEventListener("mousemove", handler);
+  }, []);
+
+  return pos;
+}
+```
+
+### Usage
+
+```jsx
+const pos = useMouse();
+```
+
+This approach is more idiomatic in modern React.
+
+---
+
+## Summary
+
+* Render props allow you to pass logic but let the consumer decide how to render UI.
+* Useful for reusable logic-heavy components.
+* Custom hooks are now the preferred alternative.
