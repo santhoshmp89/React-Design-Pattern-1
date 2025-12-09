@@ -1,5 +1,5 @@
 - [React Container–Presentation Pattern] (https://github.com/santhoshmp89/React-Design-Pattern-1/blob/main/README.md#react-containerpresentation-pattern)
-- [Render Props Pattern] (https://codesandbox.io/p/devbox/agitated-tereshkova-m953kd?file=%2Fsrc%2Findex.js%3A9%2C11&workspaceId=ws_HNgpUAEXJVy67snonvHVmS)
+- [Render Props Pattern] (https://github.com/santhoshmp89/React-Design-Pattern-1/blob/main/README.md#render-props-pattern)
 
 
 # React Container–Presentation Pattern
