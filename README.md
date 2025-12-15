@@ -314,3 +314,240 @@ This approach is more idiomatic in modern React.
 * Render props allow you to pass logic but let the consumer decide how to render UI.
 * Useful for reusable logic-heavy components.
 * Custom hooks are now the preferred alternative.
+
+
+# React Higher-Order Components (HOC) – Wiki
+
+## 1. What is a Higher-Order Component (HOC)?
+
+A **Higher-Order Component (HOC)** is an advanced React pattern for reusing component logic.
+
+> **Definition**: An HOC is a function that takes a component and returns a new enhanced component.
+
+```ts
+const EnhancedComponent = higherOrderComponent(WrappedComponent);
+```
+
+HOCs do **not modify** the original component. They **compose** behavior.
+
+---
+
+## 2. Why use HOCs?
+
+HOCs are used to handle **cross-cutting concerns** that apply to many components:
+
+* Authentication & authorization
+* Feature flags
+* Theming
+* Error boundaries
+* Analytics / tracking
+* Data fetching (legacy pattern)
+* Performance optimizations
+
+---
+
+## 3. Basic HOC Example
+
+```tsx
+const withLogger = (Component) => {
+  return function WithLogger(props) {
+    console.log('Component rendered');
+    return <Component {...props} />;
+  };
+};
+```
+
+Usage:
+
+```tsx
+export default withLogger(MyComponent);
+```
+
+---
+
+## 4. HOC with Configuration (Factory Pattern)
+
+Most real-world HOCs accept configuration.
+
+```tsx
+const withPermission = (permission) => (Component) => {
+  return function WithPermission(props) {
+    if (!hasPermission(permission)) return null;
+    return <Component {...props} />;
+  };
+};
+```
+
+Usage:
+
+```tsx
+export default withPermission('admin')(Dashboard);
+```
+
+---
+
+## 5. Injecting Props via HOC
+
+```tsx
+const withTheme = (Component) => (props) => {
+  const theme = useContext(ThemeContext);
+  return <Component {...props} theme={theme} />;
+};
+```
+
+The wrapped component automatically receives the injected props.
+
+---
+
+## 6. HOC with TypeScript (Safe Typing)
+
+```ts
+type InjectedProps = {
+  theme: string;
+};
+
+const withTheme = <P extends InjectedProps>(
+  Component: React.ComponentType<P>
+) => {
+  return (props: Omit<P, keyof InjectedProps>) => {
+    const theme = useContext(ThemeContext);
+    return <Component {...(props as P)} theme={theme} />;
+  };
+};
+```
+
+Benefits:
+
+* Prevents prop collision
+* Strong type inference
+
+---
+
+## 7. Ref Forwarding in HOCs
+
+HOCs block refs unless explicitly forwarded.
+
+```tsx
+const withFocus = (Component) =>
+  React.forwardRef((props, ref) => {
+    return <Component {...props} ref={ref} />;
+  });
+```
+
+---
+
+## 8. Render Hijacking
+
+HOCs can control rendering completely.
+
+```tsx
+const withErrorBoundary = (Component) =>
+  class ErrorBoundary extends React.Component {
+    state = { hasError: false };
+
+    static getDerivedStateFromError() {
+      return { hasError: true };
+    }
+
+    render() {
+      if (this.state.hasError) return <Fallback />;
+      return <Component {...this.props} />;
+    }
+  };
+```
+
+---
+
+## 9. Composing Multiple HOCs
+
+Avoid nesting by composing:
+
+```ts
+const enhance = compose(
+  withRouter,
+  withAuth,
+  withTheme
+);
+
+export default enhance(MyComponent);
+```
+
+---
+
+## 10. Performance Optimization with HOC
+
+```tsx
+const withMemo = (Component) => React.memo(Component);
+```
+
+Or custom comparison:
+
+```tsx
+React.memo(Component, (prev, next) => prev.id === next.id);
+```
+
+---
+
+## 11. Common Mistakes ❌
+
+### ❌ Creating HOC inside render
+
+```tsx
+function App() {
+  const Enhanced = withTheme(MyComponent); // ❌
+  return <Enhanced />;
+}
+```
+
+### ✅ Correct usage
+
+```tsx
+const Enhanced = withTheme(MyComponent);
+```
+
+---
+
+## 12. HOC vs Hooks
+
+| Use Case         | Prefer |
+| ---------------- | ------ |
+| Logic reuse      | Hooks  |
+| Render control   | HOC    |
+| Class components | HOC    |
+| Prop injection   | HOC    |
+
+---
+
+## 13. When to Use HOCs in Modern React
+
+HOCs are still relevant for:
+
+* Auth / permission layers
+* Error boundaries
+* Feature flags
+* Analytics wrappers
+* Library-level abstractions
+
+Hooks are preferred for most local logic reuse.
+
+---
+
+## 14. Best Practices ✅
+
+* Use curried HOCs
+* Forward refs when needed
+* Avoid prop collisions
+* Compose HOCs
+* Prefer hooks for simple logic
+
+---
+
+## 15. Summary
+
+* HOCs enhance components
+* They enable reuse of cross-cutting logic
+* Powerful but should be used judiciously
+* Still essential in many production use cases
+
+---
+
