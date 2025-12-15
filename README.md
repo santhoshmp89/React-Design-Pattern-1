@@ -315,6 +315,7 @@ This approach is more idiomatic in modern React.
 * Useful for reusable logic-heavy components.
 * Custom hooks are now the preferred alternative.
 
+---
 
 # React Higher-Order Components (HOC) – Wiki
 
